@@ -12,6 +12,9 @@ const chapters = [
   { id: "software", tag: "01 / SOFTWARE", number: "01", title: <>SOFTWARE THAT FITS<br />THE WAY <em>YOU WORK.</em></>, copy: "From internal tools to customer-facing platforms, we build software around real business requirements." },
   { id: "web", tag: "02 / WEB", number: "02", title: <>MORE THAN<br /><em>A WEBSITE.</em></>, copy: "We build websites and web applications that become useful parts of your business." },
   { id: "commerce", tag: "03 / COMMERCE", number: "03", title: <>BUILT TO SELL.<br /><em>DESIGNED TO SCALE.</em></>, copy: "Products, customers, checkout and operations connected inside one commerce system." },
+  { id: "connect", tag: "04 / CONNECT", number: "04", title: <>WHEN SYSTEMS<br /><em>NEED TO TALK.</em></>, copy: "APIs, integrations, automation and data synchronization bring separate systems into one working flow." },
+  { id: "cloud", tag: "05 / CLOUD", number: "05", title: <>BUILT FOR<br /><em>PRODUCTION.</em></>, copy: "Infrastructure, deployment, monitoring and scaling for technology that needs to perform." },
+  { id: "convergence", tag: "THE COMPLETE SYSTEM", number: "", title: <>YOUR BUSINESS.<br />YOUR TECHNOLOGY.<br /><em>ONE SYSTEM.</em></>, copy: "We build it." },
 ];
 
 function Arrow(){ return <span aria-hidden="true">↗</span>; }
@@ -53,7 +56,7 @@ export default function Home() {
         {chapter.actions&&<div className="actions"><button className="button solid" onClick={()=>go("contact")}>START A PROJECT <Arrow/></button><button className="button" onClick={()=>go("system")}>EXPLORE WHAT WE BUILD <Arrow/></button></div>}
       </div>
       {index===0&&<p className="enter">SCROLL TO ENTER <i>↓</i></p>}
-      {index>0&&<p className="chapter-index">0{index} / 04</p>}
+      {index>0&&<p className="chapter-index">{String(index).padStart(2,"0")} / 07</p>}
     </section>)}
     <section className="contact-bridge" id="contact"><p className="kicker">NEXT / CONTINUING THE SYSTEM</p><h2>THE JOURNEY<br/>CONTINUES <em>FROM HERE.</em></h2><p>The next phase will connect integrations, cloud infrastructure, work and the final system convergence.</p><button className="button solid">START A PROJECT <Arrow/></button></section>
   </main>;

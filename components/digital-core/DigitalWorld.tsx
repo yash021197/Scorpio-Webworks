@@ -19,28 +19,30 @@ function Nodes({ progress }: { progress: number }) {
   }), []);
   useFrame(({ clock }) => {
     if (!ref.current) return;
-    const phase = Math.min(1, progress / 0.33);
-    const web = Math.max(0, Math.min(1, (progress - .48) / .18));
-    const commerce = Math.max(0, Math.min(1, (progress - .67) / .22));
+    const phaseProgress = progress * 8;
+    const stage = Math.min(7, Math.floor(phaseProgress));
+    const phase = Math.min(1, phaseProgress);
     points.forEach((p, i) => {
-      const isScreen = i < 35;
-      const isCommerce = i >= 35 && i < 78;
-      const target = p.clone().multiplyScalar(phase ? 1.05 + phase * 1.4 : .42);
-      if (web && isScreen) target.set((i % 7 - 3) * .8, (Math.floor(i / 7) - 2) * .62, .25 + (i % 3) * .42);
-      if (commerce && isCommerce) {
+      const target = p.clone().multiplyScalar(stage ? 1.5 + Math.min(stage, 2) * .35 : .84);
+      if (stage === 2) target.set((i % 8 - 3.5) * .72, (Math.floor(i / 8) - 5.5) * .54, (i % 3 - 1) * .82);
+      if (stage === 3) target.set((i % 9 - 4) * .68, (Math.floor(i / 9) - 5) * .47, .18 + (i % 4) * .36);
+      if (stage === 4) {
         const ring = (i - 35) * .35;
         target.set(Math.cos(ring) * 3.4, Math.sin(ring) * 2.15, Math.sin(ring * 2) * .75);
       }
+      if (stage === 5) target.set((i % 6 - 2.5) * 1.24, (Math.floor(i / 6) - 8) * .48, Math.sin(i * 1.7) * 1.25);
+      if (stage === 6) target.set((i % 7 - 3) * .9, (Math.floor(i / 7) - 6) * .78 + 1.2, Math.cos(i * .6) * .7);
+      if (stage === 7) target.copy(p).multiplyScalar(2.9);
       dummy.position.copy(target);
-      const scale = .045 + (i % 5) * .012 + phase * .02;
+      const scale = .072 + (i % 5) * .014 + Math.min(1, phase) * .022;
       dummy.scale.setScalar(scale * (1 + Math.sin(clock.elapsedTime * 2 + i) * .15));
       dummy.updateMatrix();
       ref.current!.setMatrixAt(i, dummy.matrix);
     });
     ref.current.instanceMatrix.needsUpdate = true;
-    ref.current.rotation.y = clock.elapsedTime * .04 + progress * .9;
+    ref.current.rotation.y = clock.elapsedTime * .04 + phaseProgress * .24;
   });
-  return <instancedMesh ref={ref} args={[undefined, undefined, points.length]}><sphereGeometry args={[1, 12, 12]} /><meshStandardMaterial color="#0c2024" emissive="#0b4549" emissiveIntensity={1.6} metalness={.5} roughness={.28} /></instancedMesh>;
+  return <instancedMesh ref={ref} args={[undefined, undefined, points.length]}><sphereGeometry args={[1, 12, 12]} /><meshStandardMaterial color="#174349" emissive="#00a9b4" emissiveIntensity={.72} metalness={.68} roughness={.22} /></instancedMesh>;
 }
 
 function Connections({ progress }: { progress: number }) {
@@ -55,16 +57,19 @@ function Connections({ progress }: { progress: number }) {
     }
     return new THREE.BufferGeometry().setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
   }, []);
-  useFrame(({ clock }) => { if (line.current) { line.current.rotation.y = -clock.elapsedTime * .025; line.current.scale.setScalar(.2 + Math.min(1, progress / .28) * 2.4); } });
+  useFrame(({ clock }) => { if (line.current) { line.current.rotation.y = -clock.elapsedTime * .025; line.current.scale.setScalar(.28 + Math.min(1, progress * 8 / 2) * 2.35); } });
   return <lineSegments ref={line} geometry={geometry}><lineBasicMaterial color="#cbd8dc" transparent opacity={Math.min(.52, progress * 1.3)} /></lineSegments>;
 }
 
 function Architecture({ progress }: { progress: number }) {
   const group = useRef<THREE.Group>(null);
   useFrame(({ clock }) => { if (group.current) { group.current.rotation.y = Math.sin(clock.elapsedTime * .2) * .16 - progress * .45; group.current.position.y = Math.sin(clock.elapsedTime * .7) * .12; } });
-  const software = Math.max(0, Math.min(1, (progress - .32) / .2));
-  const web = Math.max(0, Math.min(1, (progress - .5) / .17));
-  const commerce = Math.max(0, Math.min(1, (progress - .68) / .2));
+  const stage = Math.min(7, Math.floor(progress * 8));
+  const software = stage >= 2 ? 1 : 0;
+  const web = stage >= 3 ? 1 : 0;
+  const commerce = stage >= 4 ? 1 : 0;
+  const connect = stage >= 5 ? 1 : 0;
+  const cloud = stage >= 6 ? 1 : 0;
   return <group ref={group}>
     <mesh scale={[1.2 + software * 2.1, 1.2 + software * 2.1, 1.2 + software * 2.1]}><icosahedronGeometry args={[1, 2]} /><meshStandardMaterial color="#162a31" metalness={.85} roughness={.18} emissive="#4e1c14" emissiveIntensity={.8} /></mesh>
     {[[-2.8,1.2,.4],[2.6,.8,-.5],[-1.9,-1.7,-.8],[1.6,-1.5,.65],[0,2.4,-1]].map((p,i)=><mesh key={i} position={p as [number,number,number]} scale={.45+software*.33}><boxGeometry args={[1,1,.25]} /><meshStandardMaterial color={palette[i % palette.length]} metalness={.6} roughness={.28} transparent opacity={.22 + software*.58} /></mesh>)}
@@ -76,18 +81,27 @@ function Architecture({ progress }: { progress: number }) {
     <group visible={commerce > .03} rotation={[.7,0,.2]} scale={1+commerce*.25}>
       {[0,1,2,3,4].map(i=><mesh key={i} position={[Math.cos(i*1.256)*3.5,Math.sin(i*1.256)*2.2,-.4]}><octahedronGeometry args={[.28,1]} /><meshStandardMaterial color="#e4512b" emissive="#e4512b" emissiveIntensity={1.1} /></mesh>)}
     </group>
+    <group visible={connect > .03} rotation={[0,.35,.1]}>
+      {[-3,0,3].map((x, i)=><mesh key={x} position={[x, i === 1 ? 1.2 : -1.1, -.7]}><boxGeometry args={[.92,.92,.92]} /><meshStandardMaterial color="#1a3034" metalness={.85} roughness={.2} emissive="#e4512b" emissiveIntensity={.42} /></mesh>)}
+    </group>
+    <group visible={cloud > .03} position={[0,1.5,-1.4]}>
+      {[-2,0,2].map((x,i)=><mesh key={x} position={[x, i*.42, 0]}><cylinderGeometry args={[.52,.7,2.4+i*.45,6]} /><meshStandardMaterial color="#bdd3d5" transparent opacity={.22} metalness={.7} roughness={.13} /></mesh>)}
+    </group>
   </group>;
 }
 
 function Scene({ progress, reduced }: Props) {
   const rig = useRef<THREE.Group>(null);
   useFrame(({ camera, clock }) => {
-    const z = 13 - Math.min(progress,.85) * 9;
-    const x = Math.sin(progress * Math.PI * 2.2) * 1.9;
-    const y = Math.cos(progress * Math.PI * 1.2) * .8;
-    camera.position.lerp(new THREE.Vector3(x, y, z), reduced ? .05 : .028);
+    const stage = Math.min(7, Math.floor(progress * 8));
+    const targets = [[0,.1,8.8],[-1.4,.4,8.2],[2.7,1,7.5],[-2,.7,7],[1.8,-1,6.7],[-3,.6,7.6],[.2,3.4,9.2],[0,.25,14.5]];
+    const target = targets[stage];
+    const x = target[0] + Math.sin(clock.elapsedTime*.12 + stage) * .22;
+    const y = target[1] + Math.cos(clock.elapsedTime*.15 + stage) * .16;
+    const z = target[2];
+    camera.position.lerp(new THREE.Vector3(x, y, z), reduced ? .07 : .022);
     camera.lookAt(0, 0, 0);
-    if (rig.current) { rig.current.rotation.z = Math.sin(clock.elapsedTime*.14) * .035; rig.current.position.x = THREE.MathUtils.lerp(2.6, 0, Math.min(1, progress * 3)); }
+    if (rig.current) { rig.current.rotation.z = Math.sin(clock.elapsedTime*.14) * .035; rig.current.position.x = THREE.MathUtils.lerp(2.7, 0, Math.min(1, progress * 8 / 1.5)); }
   });
   return <><color attach="background" args={["#030506"]} /><fog attach="fog" args={["#030506",7,22]} /><ambientLight intensity={.36} color="#b9cbd0" /><pointLight position={[4,5,5]} intensity={26} color="#e4512b" distance={16}/><pointLight position={[-5,-2,3]} intensity={28} color="#0b9da5" distance={13}/><group ref={rig}><Nodes progress={progress}/><Connections progress={progress}/><Architecture progress={progress}/></group></>;
 }
