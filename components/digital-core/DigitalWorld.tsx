@@ -6,15 +6,16 @@ import * as THREE from "three";
 
 type Props = { progress: number; reduced: boolean };
 
-const palette = ["#e4512b", "#ed8f66", "#d9d2cc", "#8fa3aa"];
+const palette = ["#e4512b", "#f0ddd2", "#66848b", "#18292d"];
 
 function Nodes({ progress }: { progress: number }) {
   const ref = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
-  const points = useMemo(() => Array.from({ length: 128 }, (_, i) => {
-    const a = i * 2.399;
-    const r = 1.8 + (i % 11) * 0.32;
-    return new THREE.Vector3(Math.cos(a) * r, Math.sin(a * 1.7) * r * 0.72, Math.sin(a) * r * 0.38);
+  const points = useMemo(() => Array.from({ length: 196 }, (_, i) => {
+    const phi = Math.acos(1 - 2 * (i + .5) / 196);
+    const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+    const r = 2.15 + (i % 7) * .045;
+    return new THREE.Vector3(Math.cos(theta) * Math.sin(phi) * r, Math.cos(phi) * r, Math.sin(theta) * Math.sin(phi) * r);
   }), []);
   useFrame(({ clock }) => {
     if (!ref.current) return;
@@ -24,14 +25,14 @@ function Nodes({ progress }: { progress: number }) {
     points.forEach((p, i) => {
       const isScreen = i < 35;
       const isCommerce = i >= 35 && i < 78;
-      const target = p.clone().multiplyScalar(phase ? 1.05 + phase * 1.4 : .18);
+      const target = p.clone().multiplyScalar(phase ? 1.05 + phase * 1.4 : .42);
       if (web && isScreen) target.set((i % 7 - 3) * .8, (Math.floor(i / 7) - 2) * .62, .25 + (i % 3) * .42);
       if (commerce && isCommerce) {
         const ring = (i - 35) * .35;
         target.set(Math.cos(ring) * 3.4, Math.sin(ring) * 2.15, Math.sin(ring * 2) * .75);
       }
       dummy.position.copy(target);
-      const scale = .022 + (i % 5) * .009 + phase * .026;
+      const scale = .045 + (i % 5) * .012 + phase * .02;
       dummy.scale.setScalar(scale * (1 + Math.sin(clock.elapsedTime * 2 + i) * .15));
       dummy.updateMatrix();
       ref.current!.setMatrixAt(i, dummy.matrix);
@@ -39,7 +40,7 @@ function Nodes({ progress }: { progress: number }) {
     ref.current.instanceMatrix.needsUpdate = true;
     ref.current.rotation.y = clock.elapsedTime * .04 + progress * .9;
   });
-  return <instancedMesh ref={ref} args={[undefined, undefined, points.length]}><sphereGeometry args={[1, 8, 8]} /><meshBasicMaterial color="#e76b47" transparent opacity={.88} /></instancedMesh>;
+  return <instancedMesh ref={ref} args={[undefined, undefined, points.length]}><sphereGeometry args={[1, 12, 12]} /><meshStandardMaterial color="#0c2024" emissive="#0b4549" emissiveIntensity={1.6} metalness={.5} roughness={.28} /></instancedMesh>;
 }
 
 function Connections({ progress }: { progress: number }) {
@@ -86,9 +87,9 @@ function Scene({ progress, reduced }: Props) {
     const y = Math.cos(progress * Math.PI * 1.2) * .8;
     camera.position.lerp(new THREE.Vector3(x, y, z), reduced ? .05 : .028);
     camera.lookAt(0, 0, 0);
-    if (rig.current) rig.current.rotation.z = Math.sin(clock.elapsedTime*.14) * .035;
+    if (rig.current) { rig.current.rotation.z = Math.sin(clock.elapsedTime*.14) * .035; rig.current.position.x = THREE.MathUtils.lerp(2.6, 0, Math.min(1, progress * 3)); }
   });
-  return <><color attach="background" args={["#050707"]} /><fog attach="fog" args={["#050707",7,22]} /><ambientLight intensity={.55} color="#b9cbd0" /><pointLight position={[4,5,5]} intensity={42} color="#ec6745" distance={16}/><pointLight position={[-5,-2,3]} intensity={20} color="#8ebbc5" distance={13}/><group ref={rig}><Nodes progress={progress}/><Connections progress={progress}/><Architecture progress={progress}/></group></>;
+  return <><color attach="background" args={["#030506"]} /><fog attach="fog" args={["#030506",7,22]} /><ambientLight intensity={.36} color="#b9cbd0" /><pointLight position={[4,5,5]} intensity={26} color="#e4512b" distance={16}/><pointLight position={[-5,-2,3]} intensity={28} color="#0b9da5" distance={13}/><group ref={rig}><Nodes progress={progress}/><Connections progress={progress}/><Architecture progress={progress}/></group></>;
 }
 
 export default function DigitalWorld(props: Props) {

@@ -2,12 +2,13 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import Lenis from "lenis";
 
 const DigitalWorld = dynamic(() => import("../components/digital-core/DigitalWorld"), { ssr: false });
 
 const chapters = [
   { id: "hero", tag: "SCORPIO WEBWORKS", number: "", title: <>SOFTWARE.<br />SYSTEMS.<br /><em>DIGITAL EXPERIENCES.</em></>, copy: "We build software, web applications, e-commerce platforms, integrations and cloud solutions for modern businesses.", actions: true },
-  { id: "system", tag: "ENTERING THE CORE", number: "", title: <>YOUR BUSINESS<br />ISN&apos;T ONE THING.<br /><em>IT&apos;S A SYSTEM.</em></>, copy: "Customers, software, data and infrastructure become more useful when they work as one." },
+  { id: "system", tag: "ABOUT SCORPIO", number: "", title: <>WE BUILD<br /><em>DIGITAL SYSTEMS.</em></>, copy: "Scorpio Webworks helps businesses turn ideas into software, digital products and connected technology systems." },
   { id: "software", tag: "01 / SOFTWARE", number: "01", title: <>SOFTWARE THAT FITS<br />THE WAY <em>YOU WORK.</em></>, copy: "From internal tools to customer-facing platforms, we build software around real business requirements." },
   { id: "web", tag: "02 / WEB", number: "02", title: <>MORE THAN<br /><em>A WEBSITE.</em></>, copy: "We build websites and web applications that become useful parts of your business." },
   { id: "commerce", tag: "03 / COMMERCE", number: "03", title: <>BUILT TO SELL.<br /><em>DESIGNED TO SCALE.</em></>, copy: "Products, customers, checkout and operations connected inside one commerce system." },
@@ -24,6 +25,14 @@ export default function Home() {
     update(); addEventListener("scroll", update, { passive:true }); addEventListener("resize", update); motion.addEventListener("change",update);
     return () => { removeEventListener("scroll",update); removeEventListener("resize",update); motion.removeEventListener("change",update); };
   }, []);
+  useEffect(() => {
+    if (reduced) return;
+    const lenis = new Lenis({ lerp: .075, smoothWheel: true });
+    let frame = 0;
+    const raf = (time:number) => { lenis.raf(time); frame = requestAnimationFrame(raf); };
+    frame = requestAnimationFrame(raf);
+    return () => { cancelAnimationFrame(frame); lenis.destroy(); };
+  }, [reduced]);
   const go=(id:string)=>{setMenu(false);document.getElementById(id)?.scrollIntoView({behavior:"smooth"});};
   return <main className="immersive">
     <DigitalWorld progress={progress} reduced={reduced} />
