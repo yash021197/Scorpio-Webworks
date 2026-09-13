@@ -1,19 +1,51 @@
 "use client";
-import { FormEvent, useEffect, useState } from "react";
-const services=[["01","SOFTWARE","Custom software built around how your business works.",["Custom software","Business applications","SaaS products","Automation"]],["02","WEB","Websites and applications designed for performance, usability and scale.",["Corporate websites","Customer portals","Admin dashboards","Digital experiences"]],["03","COMMERCE","Digital commerce that connects customers, products, payments and operations.",["E-commerce","Catalog systems","Payments","Order management"]],["04","CONNECT","APIs and integrations that make different systems work together.",["REST APIs","CRM / ERP","Data sync","Workflow automation"]],["05","CLOUD & IT","Infrastructure that keeps digital systems reliable and scalable.",["Cloud architecture","CI/CD","Monitoring","Security"]]];
-const projects=[["Project One","SOFTWARE / BUSINESS","A replaceable example for a business platform built around operations.",["Next.js","AWS","PostgreSQL"]],["Project Two","COMMERCE / RETAIL","A replaceable example for a connected commerce experience.",["Commerce","Payments","Integrations"]],["Project Three","INTEGRATION / SERVICES","A replaceable example for a multi-system workflow.",["API","Automation","Cloud"]]];
-function Arrow(){return <span aria-hidden="true">↗</span>}
-function Core({mode="hero"}:{mode?:string}){return <div className={"core core--"+mode} aria-hidden="true"><i className="orbit a"/><i className="orbit b"/><i className="orbit c"/><i className="rays"/>{Array.from({length:13},(_,i)=><i className={"node n"+i} key={i}/>)}<div className="core-center"><i/></div></div>}
-export default function Home(){const[menu,setMenu]=useState(false),[sent,setSent]=useState(false),[small,setSmall]=useState(false);useEffect(()=>{const f=()=>setSmall(scrollY>30);f();addEventListener("scroll",f,{passive:true});return()=>removeEventListener("scroll",f)},[]);const go=(id:string)=>{setMenu(false);document.getElementById(id)?.scrollIntoView({behavior:"smooth"})};const send=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();setSent(true)};return <main>
-<header className={"nav "+(small?"compact":"")}><button className="brand" onClick={()=>go("top")}><b>S</b><span>SCORPIO<br/>WEBWORKS</span></button><nav>{[["Services","services"],["Solutions","solutions"],["Work","work"],["About","about"],["Contact","contact"]].map(([x,id])=><button key={id} onClick={()=>go(id)}>{x}</button>)}</nav><button className="nav-cta" onClick={()=>go("contact")}>LET&apos;S BUILD <Arrow/></button><button className="menu" onClick={()=>setMenu(!menu)} aria-label="Menu"><i/><i/></button>{menu&&<div className="mobile-nav">{[["Services","services"],["Solutions","solutions"],["Work","work"],["About","about"],["Contact","contact"]].map(([x,id])=><button key={id} onClick={()=>go(id)}>{x}</button>)}</div>}</header>
-<section className="hero" id="top"><div className="grid"/><Core/><div className="hero-copy"><p className="kicker">SCORPIO WEBWORKS <b>•</b> TECHNOLOGY PARTNER</p><h1>SOFTWARE.<br/>SYSTEMS.<br/><em>DIGITAL EXPERIENCES.</em></h1><p>We build software, web applications, e-commerce platforms, integrations and cloud solutions for modern businesses.</p><div className="actions"><button className="button primary" onClick={()=>go("contact")}>START A PROJECT <Arrow/></button><button className="button" onClick={()=>go("services")}>EXPLORE WHAT WE BUILD <Arrow/></button></div></div><small className="scroll">— &nbsp; SCROLL TO ENTER</small></section>
-<section className="section statement" id="about"><p className="kicker">01 / THE BIG PICTURE</p><h2>YOUR BUSINESS<br/>IS A <em>SYSTEM.</em></h2><div><p>Customers.<br/>Software.<br/>Data.<br/>Website.<br/>Infrastructure.<br/>Integrations.</p><aside><Core mode="system"/></aside><strong>WE CONNECT<br/>THE PIECES.</strong></div></section>
-<section className="section services" id="services"><div className="head"><div><p className="kicker">02 / CAPABILITIES</p><h2>FROM IDEA<br/>TO <em>INFRASTRUCTURE.</em></h2></div><p>One team for the things that make a modern business work — from the first interface to the systems behind it.</p></div><div className="service-list">{services.map(([n,t,c,items])=><article key={t}><small>{n}</small><div><h3>{t}</h3><p>{c}</p></div><ul>{(items as string[]).map(x=><li key={x}>{x}</li>)}</ul><button className="circle" onClick={()=>go("contact")} aria-label={"Discuss "+t}><Arrow/></button></article>)}</div></section>
-<section className="section solutions" id="solutions"><p className="kicker">03 / SYSTEMS, NOT SILOS</p><div className="head"><h2>TECHNOLOGY THAT<br/><em>MOVES WITH YOU.</em></h2><p>Every part of your digital presence should make the next part more useful. We design the architecture that lets it happen.</p></div><div className="solution-grid">{[["SOFTWARE","Fits the way you work.","Business platforms, dashboards and automation built for real requirements."],["WEB","More than a website.","Useful, high-performing experiences your business can grow into."],["COMMERCE","Built to sell.","Storefront, checkout and operations connected as one experience."],["CONNECT","Systems that talk.","APIs and integrations that remove manual handoffs."],["CLOUD & IT","Built for production.","Infrastructure that is secure, observable and ready to scale."]].map(([a,b,c])=><article key={a}><small>{a}</small><h3>{b}</h3><p>{c}</p></article>)}</div></section>
-<section className="story"><Core mode="complete"/><div><p className="kicker">04 / THE CONNECTION</p><p>YOUR WEBSITE IS PART OF THE SYSTEM.</p><p>YOUR SOFTWARE IS PART OF THE SYSTEM.</p><p>YOUR DATA IS PART OF THE SYSTEM.</p><p>YOUR CLOUD IS PART OF THE SYSTEM.</p><h2>EVERYTHING<br/><em>CONNECTS.</em></h2><strong>THAT&apos;S WHERE WE COME IN.</strong></div></section>
-<section className="section process"><p className="kicker">05 / HOW WE BUILD</p><h2>A CLEAR PATH<br/>FROM <em>COMPLEXITY.</em></h2><div className="process-grid">{[["01","DISCOVER","Understand the business, users and technical requirements."],["02","DEFINE","Turn requirements into a clear solution architecture."],["03","DESIGN","Shape the experience, system and foundation."],["04","BUILD","Develop the product using modern technology."],["05","CONNECT","Integrate APIs, services, data and infrastructure."],["06","DEPLOY & SCALE","Launch, monitor, optimize and evolve."]].map(([n,t,c])=><article key={n}><small>{n}</small><h3>{t}</h3><p>{c}</p></article>)}</div></section>
-<section className="section work" id="work"><div className="head"><div><p className="kicker">06 / SELECTED WORK</p><h2>BUILT FOR THE<br/><em>REAL WORLD.</em></h2></div><p>Representative placeholders, ready to be replaced with the work you want to show.</p></div><div className="projects">{projects.map(([t,k,d,tech],i)=><article key={t}><div className={"visual v"+i}><small>0{i+1}</small></div><div><p className="kicker">{k}</p><h3>{t}</h3><p>{d}</p><ul>{(tech as string[]).map(x=><li key={x}>{x}</li>)}</ul></div><button className="circle" aria-label={"View "+t}><Arrow/></button></article>)}</div></section>
-<section className="section why"><p className="kicker">07 / WHY SCORPIO</p><h2>TECHNOLOGY THAT<br/><em>WORKS FOR YOUR BUSINESS.</em></h2><div>{[["01","BUSINESS FIRST","Technology should solve a business problem."],["02","ENGINEERED TO SCALE","Build foundations that can grow with you."],["03","CONNECTED BY DESIGN","Systems work better when they work together."],["04","BUILT FOR THE REAL WORLD","Performance, reliability and maintainability matter."]].map(([n,t,c])=><article key={n}><small>{n}</small><h3>{t}</h3><p>{c}</p></article>)}</div></section>
-<section className="contact" id="contact"><Core mode="complete"/><div className="contact-grid"><div><p className="kicker">08 / START A PROJECT</p><h2>HAVE A<br/><em>COMPLEX IDEA?</em></h2><p>Tell us what you&apos;re building. We&apos;ll help you figure out what comes next.</p></div>{sent?<aside className="success"><b>✓</b><h3>MESSAGE READY.</h3><p>Thanks for reaching out. Connect this form to your preferred inbox to start receiving enquiries.</p><button className="button" onClick={()=>setSent(false)}>SEND ANOTHER <Arrow/></button></aside>:<form onSubmit={send}><label>Name<input required/></label><label>Company<input/></label><label>Email<input required type="email"/></label><label>What are you looking for?<select defaultValue="" required><option value="" disabled>Select a solution</option>{["Software Development","Website","Web Application","E-commerce","API / Integration","Cloud / IT","Multiple Solutions","Not Sure Yet"].map(x=><option key={x}>{x}</option>)}</select></label><label className="wide">Message<textarea required rows={3}/></label><button className="button primary wide">LET&apos;S BUILD IT <Arrow/></button></form>}</div></section>
-<footer><button className="brand" onClick={()=>go("top")}><b>S</b><span>SCORPIO<br/>WEBWORKS</span></button><p>Software. Systems. Digital Experiences.</p><div><a href="mailto:hello@yourdomain.com">EMAIL PLACEHOLDER</a><span>LOCATION PLACEHOLDER</span></div><small>© {new Date().getFullYear()} Scorpio Webworks. All rights reserved.</small></footer>
-</main>}
+
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+
+const DigitalWorld = dynamic(() => import("../components/digital-core/DigitalWorld"), { ssr: false });
+
+const chapters = [
+  { id: "hero", tag: "SCORPIO WEBWORKS", number: "", title: <>SOFTWARE.<br />SYSTEMS.<br /><em>DIGITAL EXPERIENCES.</em></>, copy: "We build software, web applications, e-commerce platforms, integrations and cloud solutions for modern businesses.", actions: true },
+  { id: "system", tag: "ENTERING THE CORE", number: "", title: <>YOUR BUSINESS<br />ISN&apos;T ONE THING.<br /><em>IT&apos;S A SYSTEM.</em></>, copy: "Customers, software, data and infrastructure become more useful when they work as one." },
+  { id: "software", tag: "01 / SOFTWARE", number: "01", title: <>SOFTWARE THAT FITS<br />THE WAY <em>YOU WORK.</em></>, copy: "From internal tools to customer-facing platforms, we build software around real business requirements." },
+  { id: "web", tag: "02 / WEB", number: "02", title: <>MORE THAN<br /><em>A WEBSITE.</em></>, copy: "We build websites and web applications that become useful parts of your business." },
+  { id: "commerce", tag: "03 / COMMERCE", number: "03", title: <>BUILT TO SELL.<br /><em>DESIGNED TO SCALE.</em></>, copy: "Products, customers, checkout and operations connected inside one commerce system." },
+];
+
+function Arrow(){ return <span aria-hidden="true">↗</span>; }
+export default function Home() {
+  const [progress, setProgress] = useState(0);
+  const [menu, setMenu] = useState(false);
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const motion = matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => { setReduced(motion.matches); setProgress(Math.min(1, scrollY / Math.max(1, document.body.scrollHeight - innerHeight))); };
+    update(); addEventListener("scroll", update, { passive:true }); addEventListener("resize", update); motion.addEventListener("change",update);
+    return () => { removeEventListener("scroll",update); removeEventListener("resize",update); motion.removeEventListener("change",update); };
+  }, []);
+  const go=(id:string)=>{setMenu(false);document.getElementById(id)?.scrollIntoView({behavior:"smooth"});};
+  return <main className="immersive">
+    <DigitalWorld progress={progress} reduced={reduced} />
+    <header className={progress>.035?"cinematic-nav nav-on":"cinematic-nav"}>
+      <button className="brand" onClick={()=>go("hero")}><b>S</b><span>SCORPIO<br/>WEBWORKS</span></button>
+      <nav>{[["Services","software"],["Solutions","system"],["Work","commerce"],["About","system"],["Contact","contact"]].map(([t,id])=><button key={t} onClick={()=>go(id)}>{t}</button>)}</nav>
+      <button className="build" onClick={()=>go("contact")}>LET&apos;S BUILD <Arrow/></button>
+      <button className="menu" aria-label="Open menu" onClick={()=>setMenu(!menu)}><i/><i/></button>
+      {menu&&<aside className="nav-sheet">{[["Services","software"],["Solutions","system"],["Work","commerce"],["Contact","contact"]].map(([t,id])=><button key={t} onClick={()=>go(id)}>{t}</button>)}</aside>}
+    </header>
+    <div className="scroll-rail"><span style={{transform:`scaleY(${Math.max(.02,progress)})`}}/></div>
+    {chapters.map((chapter, index)=><section className={"chapter c-"+chapter.id} id={chapter.id} key={chapter.id}>
+      <div className="chapter-copy">
+        <p className="kicker">{chapter.tag}</p>
+        {chapter.number&&<p className="number">{chapter.number}</p>}
+        <h1>{chapter.title}</h1>
+        <p className="copy">{chapter.copy}</p>
+        {chapter.actions&&<div className="actions"><button className="button solid" onClick={()=>go("contact")}>START A PROJECT <Arrow/></button><button className="button" onClick={()=>go("system")}>EXPLORE WHAT WE BUILD <Arrow/></button></div>}
+      </div>
+      {index===0&&<p className="enter">SCROLL TO ENTER <i>↓</i></p>}
+      {index>0&&<p className="chapter-index">0{index} / 04</p>}
+    </section>)}
+    <section className="contact-bridge" id="contact"><p className="kicker">NEXT / CONTINUING THE SYSTEM</p><h2>THE JOURNEY<br/>CONTINUES <em>FROM HERE.</em></h2><p>The next phase will connect integrations, cloud infrastructure, work and the final system convergence.</p><button className="button solid">START A PROJECT <Arrow/></button></section>
+  </main>;
+}
