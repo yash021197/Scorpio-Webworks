@@ -2,8 +2,22 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Scorpio Webworks — Software. Systems. Digital Experiences.",
-  description: "Custom software, web applications, e-commerce platforms, API integrations and cloud solutions.",
+  metadataBase: new URL("https://scorpiowebworks.vercel.app"),
+  title: "Scorpio Webworks — Software Development & Digital Experiences",
+  description: "Scorpio Webworks builds modern websites, web applications, e-commerce experiences, and custom software for businesses.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Scorpio Webworks — Software Development & Digital Experiences",
+    description: "Scorpio Webworks builds modern websites, web applications, e-commerce experiences, and custom software for businesses.",
+    url: "/",
+    siteName: "Scorpio Webworks",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Scorpio Webworks — Software Development & Digital Experiences",
+    description: "Scorpio Webworks builds modern websites, web applications, e-commerce experiences, and custom software for businesses.",
+  },
   other: {
     "codex-preview": "development",
   },
